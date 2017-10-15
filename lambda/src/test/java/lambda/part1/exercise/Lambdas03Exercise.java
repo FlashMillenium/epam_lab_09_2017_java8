@@ -3,6 +3,8 @@ package lambda.part1.exercise;
 import org.junit.Test;
 
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -52,9 +54,12 @@ public class Lambdas03Exercise {
         return sb.toString();
     }
 
+    private static String stringProdMy(String s, int i) {
+        return Stream.generate(() -> s).limit(i).collect(Collectors.joining());
+    }
     @Test
     public void strSum() {
-        final GenericProduct<String> prod = Lambdas03Exercise::stringProd; // use stringProd;
+        final GenericProduct<String> prod = Lambdas03Exercise::stringProdMy; // use stringProd;
 
         assertEquals(prod.prod("a", 2), "aa");
     }
