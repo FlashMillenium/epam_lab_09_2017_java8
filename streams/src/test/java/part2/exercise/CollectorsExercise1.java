@@ -6,6 +6,9 @@ import data.Person;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 public class CollectorsExercise1 {
 
@@ -37,7 +40,12 @@ public class CollectorsExercise1 {
     // "epam" -> "Alex Ivanov 23, Semen Popugaev 25, Ivan Ivanov 33"
     @Test
     public void getEmployeesByEmployer() {
-        Map<String, String> result = null;
+        Map<String, String> result = getEmployees().stream()
+                .flatMap(e-> e.getJobHistory().stream()
+                        .collect(toMap(JobHistoryEntry::getEmployer,(x)->e.getPerson().toString(),(x, y)->x))
+                .entrySet().stream())
+                .collect(groupingBy(Map.Entry::getKey, mapping(Map.Entry::getValue, joining(" "))));
+        System.out.println(result);
 
     }
 
@@ -53,12 +61,17 @@ public class CollectorsExercise1 {
         // Collectors.maxBy
         // Collectors.collectingAndThen
         // Collectors.groupingBy
-
+        return employees.stream().flatMap(e-> e.getJobHistory().stream()
+                        .collect(toMap(JobHistoryEntry::getPosition,JobHistoryEntry::getDuration,(x,y)->x+y))
+                        .entrySet().stream()
+                .map(x-> new PersonPositionDuration(e.getPerson(),x.getKey(),x.getValue())))
+                .collect(groupingBy(PersonPositionDuration::getPosition,
+                        collectingAndThen(maxBy(Comparator.comparing(PersonPositionDuration::getDuration))
+                                ,x->x.get().getPerson())));
         // Second option
         // Collectors.toMap
         // iterate twice: stream...collect(...).stream()...
-        // TODO
-        throw new UnsupportedOperationException();
+        //
     }
 
     private List<Employee> getEmployees() {
