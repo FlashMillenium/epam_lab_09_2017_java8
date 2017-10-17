@@ -15,8 +15,8 @@ import java.util.stream.StreamSupport;
 @Fork(1)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 10, time = 1)
+@Measurement(iterations = 10, time = 1)
 @State(Scope.Thread)
 public class RandomIntegers {
 
