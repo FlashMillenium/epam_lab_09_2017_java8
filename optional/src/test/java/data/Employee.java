@@ -11,7 +11,6 @@ public class Employee {
 
     public Employee(Person person, List<JobHistoryEntry> jobHistory) {
         this.person = person;
-        Optional
         this.jobHistory = jobHistory;
     }
 
