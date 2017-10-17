@@ -1,11 +1,10 @@
 package part1.exercise;
 
-
-import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
 
 public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
+
 
     private final int innerLength;
     private final int[][] array;
@@ -18,24 +17,25 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
     }
 
     private RectangleSpliterator(int[][] array, int startOuterInclusive, int endOuterExclusive, int startInnerInclusive) {
-        super(Long.MAX_VALUE, Spliterator.IMMUTABLE | Spliterator.ORDERED | Spliterator.SIZED | Spliterator.SUBSIZED | Spliterator.NONNULL);
-
-        innerLength = array.length == 0 ? 0 : array[0].length;
+        super(-1, 0);       // TODO заменить
+//       super(estimatedSize, Spliterator.IMMUTABLE
+//                          | Spliterator.ORDERED
+//                          | Spliterator.SIZED
+//                          | Spliterator.SUBSIZED
+//                          | Spliterator.NONNULL);
         this.array = array;
-        this.startOuterInclusive = startOuterInclusive;
-        this.endOuterExclusive = endOuterExclusive;
-        this.startInnerInclusive = startInnerInclusive;
     }
 
     @Override
     public OfInt trySplit() {
-
+        // TODO
         throw new UnsupportedOperationException();
     }
 
     @Override
     public long estimateSize() {
-        return ((long) endOuterExclusive - startOuterInclusive)*innerLength - startInnerInclusive;
+        // TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
