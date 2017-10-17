@@ -71,7 +71,6 @@ public class CollectorsExercise1 {
         // Second option
         // Collectors.toMap
         // iterate twice: stream...collect(...).stream()...
-        //
     }
 
     private List<Employee> getEmployees() {
