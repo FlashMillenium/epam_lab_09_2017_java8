@@ -131,16 +131,16 @@ public class Mapping {
         }
 
         public <U> LazyFlatMapHelper<T, U> flatMap(Function<R, List<U>> remapper) {
-            return new LazyFlatMapHelper<>(list, mapper.andThen(result -> result.stream()
-                                                                                .flatMap(element -> remapper.apply(element).stream())
-                                                                                .collect(Collectors.toList())));
+            return new LazyFlatMapHelper<>(list, mapper.andThen(result -> force(result, remapper)));
         }
 
         public List<R> force() {
-            ArrayList<R> result = new ArrayList<>();
-            for (T value : list) {
-                result.addAll(mapper.apply(value));
-            }
+            return force(list, mapper);
+        }
+
+        private <A, B> List<B> force(List<A> list, Function<A, List<B>> mapper) {
+            List<B> result = new ArrayList<>(list.size());
+            list.forEach(element -> result.addAll(mapper.apply(element)));
             return result;
         }
     }

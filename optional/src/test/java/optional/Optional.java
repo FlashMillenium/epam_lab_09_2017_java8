@@ -58,7 +58,7 @@ public class Optional<T> {
         return isPresent() ? value : supplier.get();
     }
 
-    public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) {
+    public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
         if (isPresent()) {
             return value;
         } else {
