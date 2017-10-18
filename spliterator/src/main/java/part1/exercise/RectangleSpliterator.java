@@ -35,7 +35,6 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
     @Override
     public OfInt trySplit() {
         long size =estimateSize();
-        System.out.println(size);
         if(size<10) return null;
 
 
@@ -51,27 +50,16 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 //        return result;
 
         int halfsize=(int)size/2;
-        if((halfsize-startInnerInclusive)<1) return null;
-        int newEndIndex =(halfsize-startInnerInclusive)%innerLength;
-        int newRowIndex =startOuterInclusive+(halfsize-startInnerInclusive)/innerLength;
-        if(newEndIndex==0){
-            System.out.println("even");
-            RectangleSpliterator result =new RectangleSpliterator(array, startOuterInclusive,
-                    newRowIndex, startInnerInclusive, newEndIndex);
-            this.startOuterInclusive = newRowIndex;
-            this.startInnerInclusive = newEndIndex;
-            return result;
-        }else
-        {
-            System.out.println("odd");
-            System.out.println(startInnerInclusive+" "+newEndIndex + " " + innerLength);
-//            System.out.println(startOuterInclusive+" "+endOuterExclusive+" "+startInnerInclusive+" "+newEndIndex);
-            RectangleSpliterator result =new RectangleSpliterator(array, startOuterInclusive,
-                    newRowIndex+1, startInnerInclusive, newEndIndex);
-            this.startOuterInclusive = newRowIndex;
-            this.startInnerInclusive = newEndIndex;
-            return result;
-        }
+//        if((halfsize-(innerLength - startInnerInclusive))<1) return null;
+        int newEndIndex =(halfsize-(innerLength - startInnerInclusive))%innerLength;
+        int newRowIndex =startOuterInclusive+(innerLength - startInnerInclusive)/innerLength;
+        if(startOuterInclusive==newRowIndex && newEndIndex<startInnerInclusive) return null;
+
+        RectangleSpliterator result =new RectangleSpliterator(array, startOuterInclusive,
+              newEndIndex==0?newRowIndex : newRowIndex+1, startInnerInclusive, newEndIndex);
+        this.startOuterInclusive = newRowIndex;
+        this.startInnerInclusive= newEndIndex;
+        return result;
     }
 
     @Override
