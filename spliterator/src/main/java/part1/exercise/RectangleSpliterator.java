@@ -49,6 +49,7 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 //        this.startOuterInclusive=mid;
 //        return result;
 
+        // i'm tryharder
         int halfsize=(int)size/2;
 //        if((halfsize-(innerLength - startInnerInclusive))<1) return null;
         int newEndIndex =(halfsize-(innerLength - startInnerInclusive))%innerLength;
