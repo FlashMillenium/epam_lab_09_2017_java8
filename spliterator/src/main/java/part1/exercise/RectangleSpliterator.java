@@ -51,10 +51,17 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
         // i'm tryharder
         int halfsize=(int)size/2;
-//        if((halfsize-(innerLength - startInnerInclusive))<1) return null;
+        if((halfsize-(innerLength - startInnerInclusive))<1) return null;
         int newEndIndex =(halfsize-(innerLength - startInnerInclusive))%innerLength;
         int newRowIndex =startOuterInclusive+(innerLength - startInnerInclusive)/innerLength;
-        if(startOuterInclusive==newRowIndex && newEndIndex<startInnerInclusive) return null;
+        if(startOuterInclusive==newRowIndex)
+            if(newEndIndex<startInnerInclusive)
+                return null;
+            else
+                 newEndIndex = startInnerInclusive + (halfsize-(innerLength - startInnerInclusive))%innerLength;
+
+//        int newEndIndex =(halfsize-(innerLength - startInnerInclusive))%innerLength;
+//        if(startOuterInclusive==newRowIndex && newEndIndex<startInnerInclusive) return null;
 
         RectangleSpliterator result =new RectangleSpliterator(array, startOuterInclusive,
               newEndIndex==0?newRowIndex : newRowIndex+1, startInnerInclusive, newEndIndex);
