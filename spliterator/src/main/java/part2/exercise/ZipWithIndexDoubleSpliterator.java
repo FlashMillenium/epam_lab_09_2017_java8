@@ -40,23 +40,13 @@ public class ZipWithIndexDoubleSpliterator extends Spliterators.AbstractSplitera
     public void forEachRemaining(Consumer<? super IndexedDoublePair> action) {
         // TODO
         int i = currentIndex;
-        if(inner.hasCharacteristics(Spliterator.SIZED)){
-            for (; i<inner.estimateSize();i++){
-                final int x = i;
-                inner.tryAdvance((DoubleConsumer) e->
-                        action.accept(new IndexedDoublePair(x,e)));
-            }
-            currentIndex=i;
-        } else {
-            boolean next;
-           do{
-               final int x = i;
-               next=inner.tryAdvance((DoubleConsumer) e->
-                       action.accept(new IndexedDoublePair(x,e)));
-               i++;
-           }
-           while (next);
-        }
+        boolean next;
+        do{
+            final int x = i;
+            next=inner.tryAdvance((DoubleConsumer) e->
+                    action.accept(new IndexedDoublePair(x,e)));
+            i++;
+        } while (next);
     }
 
     @Override
