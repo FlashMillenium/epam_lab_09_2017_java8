@@ -1,5 +1,6 @@
 package part2.exercise;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -73,7 +74,15 @@ public class ZipWithIndexDoubleSpliterator extends Spliterators.AbstractSplitera
             return result;
         }else
         {
-            return null;
+            int ARRAY_SIZE = 128;
+            double[] splitarray = new double[ARRAY_SIZE];
+            for (int i = 0; i<splitarray.length; i++ ){
+                int finalI = i;
+                inner.tryAdvance((DoubleConsumer) (x)-> splitarray[finalI]=x);
+            }
+            ZipWithIndexDoubleSpliterator result = new ZipWithIndexDoubleSpliterator(currentIndex,Spliterators.spliterator(splitarray, splitarray.length));
+            currentIndex += splitarray.length;
+            return result;
         }
     }
 
