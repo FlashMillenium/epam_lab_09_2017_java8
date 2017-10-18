@@ -37,7 +37,6 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
         long size =estimateSize();
         if(size<10) return null;
 
-
 //       simple split by rows
 //        int length =(endOuterExclusive-startOuterInclusive)/2;
 //       if (length<2)
@@ -51,20 +50,18 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
         // i'm tryharder
         int halfsize=(int)size/2;
-        if((halfsize-(innerLength - startInnerInclusive))<1) return null;
-        int newEndIndex =(halfsize-(innerLength - startInnerInclusive))%innerLength;
+        if((halfsize-(innerLength - startInnerInclusive))<1) return null;  // i have this state when array is [7][7]
+        int newEndIndex =(halfsize-(innerLength - startInnerInclusive))%innerLength; // this index not on same row so it's like startInnerInclusive =0
         int newRowIndex =startOuterInclusive+(innerLength - startInnerInclusive)/innerLength;
-        if(startOuterInclusive==newRowIndex)
-            if(newEndIndex<startInnerInclusive)
+        if(startOuterInclusive==newRowIndex) //if we have only one row
+            if(newEndIndex<startInnerInclusive) //and indexes don't fucked up
                 return null;
             else
-                 newEndIndex = startInnerInclusive + (halfsize-(innerLength - startInnerInclusive))%innerLength;
-
-//        int newEndIndex =(halfsize-(innerLength - startInnerInclusive))%innerLength;
-//        if(startOuterInclusive==newRowIndex && newEndIndex<startInnerInclusive) return null;
-
+                 newEndIndex = startInnerInclusive + (halfsize-(innerLength - startInnerInclusive))%innerLength; //new index in same row calc
         RectangleSpliterator result =new RectangleSpliterator(array, startOuterInclusive,
-              newEndIndex==0?newRowIndex : newRowIndex+1, startInnerInclusive, newEndIndex);
+              newEndIndex==0?newRowIndex : newRowIndex+1, // newRowIndex is exclusive parameter, so if we need use item
+                                                   // from this row in new spliterator we need add +1 to this parameter
+                startInnerInclusive, newEndIndex);
         this.startOuterInclusive = newRowIndex;
         this.startInnerInclusive= newEndIndex;
         return result;
