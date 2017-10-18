@@ -54,4 +54,12 @@ public class IntArraySpliterator extends Spliterators.AbstractIntSpliterator {
     public long estimateSize() {
         return endExclusive - startInclusive;
     }
+
+    @Override
+    public void forEachRemaining(IntConsumer action) {
+        for (int i = startInclusive; i < endExclusive; i++) {
+            action.accept(array[i]);
+        }
+        startInclusive = endExclusive;
+    }
 }

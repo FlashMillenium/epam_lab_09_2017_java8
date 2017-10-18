@@ -7,14 +7,20 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
     private final int[][] array;
 
-    private RectangleSpliterator(int[][] array, int startOuterInclusive, int endOuterExclusive, int startInnerInclusive) {
-        super(-1, 0);       // TODO заменить
+    public RectangleSpliterator(int[][] array) {
+        super(checkArrayAndCalcEstimatedSize(array), 0);       // TODO заменить
 //       super(estimatedSize, Spliterator.IMMUTABLE
 //                          | Spliterator.ORDERED
 //                          | Spliterator.SIZED
 //                          | Spliterator.SUBSIZED
 //                          | Spliterator.NONNULL);
         this.array = array;
+    }
+
+    private static long checkArrayAndCalcEstimatedSize(int[][] array) {
+        // TODO
+
+        return array.length * array[0].length;
     }
 
     @Override
@@ -33,5 +39,34 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
     public boolean tryAdvance(IntConsumer action) {
         // TODO
         throw new UnsupportedOperationException();
+    }
+
+
+}
+
+
+class A {
+
+    protected String val;
+
+    A() {
+        setVal();
+    }
+
+    public void setVal() {
+        val = "A";
+    }
+}
+
+class B extends A {
+
+    @Override
+    public void setVal() {
+        val = "B";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new B().val);
+
     }
 }

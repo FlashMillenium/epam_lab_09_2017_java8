@@ -7,11 +7,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.StreamSupport;
 
-@Fork(1)
+@Fork(5)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 5, time = 1)
+@Measurement(iterations = 10, time = 1)
 @State(Scope.Thread)
 public class RectangleSpliteratorExercise {
 
@@ -21,7 +21,7 @@ public class RectangleSpliteratorExercise {
     @Param({"100"})
     public int innerLength;
 
-    public int[][] array;
+    private int[][] array;
 
     @Setup
     public void setup() {
@@ -38,36 +38,34 @@ public class RectangleSpliteratorExercise {
 
 
     @Benchmark
-    public long baiseline_seq() {
+    public long baselineSequential() {
         return Arrays.stream(array)
-                .sequential()
-                .flatMapToInt(Arrays::stream)
-                .asLongStream()
-                .sum();
+                     .sequential()
+                     .flatMapToInt(Arrays::stream)
+                     .asLongStream()
+                     .sum();
     }
 
     @Benchmark
-    public long baiseline_par() {
+    public long baselineParallel() {
         return Arrays.stream(array)
-                .parallel()
-                .flatMapToInt(Arrays::stream)
-                .asLongStream()
-                .sum();
+                     .parallel()
+                     .flatMapToInt(Arrays::stream)
+                     .asLongStream()
+                     .sum();
     }
 
     @Benchmark
-    public long rectangle_seq() {
-        final boolean parallel = false;
-        return StreamSupport.intStream(new RectangleSpliterator(array), parallel)
-                .asLongStream()
-                .sum();
+    public long rectangleSequential() {
+        return StreamSupport.intStream(new RectangleSpliterator(array), false)
+                            .asLongStream()
+                            .sum();
     }
 
     @Benchmark
-    public long rectangle_par() {
-        final boolean parallel = true;
-        return StreamSupport.intStream(new RectangleSpliterator(array), parallel)
-                .asLongStream()
-                .sum();
+    public long rectangleParallel() {
+        return StreamSupport.intStream(new RectangleSpliterator(array), true)
+                            .asLongStream()
+                            .sum();
     }
 }
