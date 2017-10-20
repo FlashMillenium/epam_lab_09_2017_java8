@@ -51,12 +51,25 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
         // i'm tryharder
         int halfsize=(int)size/2;
         int borderShift = innerLength==0? innerLength : innerLength - startInnerInclusive;
-        if((halfsize- borderShift)<1) return null;  // i have this state when array is [7][7]
+        if((halfsize- borderShift)<1){
+            int newEndIndex = startInnerInclusive+halfsize/2;
+            RectangleSpliterator result = new RectangleSpliterator(array, startOuterInclusive,
+                    startOuterInclusive+1, startInnerInclusive, newEndIndex);
+            this.startInnerInclusive= newEndIndex;
+            return result;
+        }
+        else{
         int newEndIndex =(halfsize- borderShift)%innerLength; // this index not on same row so it's like startInnerInclusive =0
         int newRowIndex =startOuterInclusive+halfsize/innerLength;
         if(startOuterInclusive==newRowIndex) //if we have only one row
-            if(newEndIndex<startInnerInclusive) //and indexes don't fucked up
+            if(newEndIndex<startInnerInclusive){ //and indexes don't fucked up
+//                System.out.println(halfsize+ " "+(endOuterExclusive-startOuterInclusive)+ " " + newEndIndex + " " + lastRowEndIndexExclusive);
+//                RectangleSpliterator result = new RectangleSpliterator(array, startOuterInclusive, newRowIndex+1, startInnerInclusive, newEndIndex);
+//
+//                this.startInnerInclusive = newEndIndex;
+//                return result;
                 return null;
+        }
             else
                  newEndIndex = startInnerInclusive + (halfsize- borderShift)%innerLength; //new index in same row calc
         RectangleSpliterator result =new RectangleSpliterator(array, startOuterInclusive,
@@ -65,7 +78,7 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
                 startInnerInclusive, newEndIndex);
         this.startOuterInclusive = newRowIndex;
         this.startInnerInclusive= newEndIndex;
-        return result;
+        return result;}
     }
 
     @Override
