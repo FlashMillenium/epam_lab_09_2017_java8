@@ -32,10 +32,10 @@ import static java.util.stream.Collectors.toMap;
 public class FutureBenchmark {
 
     @Param({"400", "4000", "40000"})
-    public int requestCount;
+    public int requestCount = 10;
 
     @Param({"10000"})
-    public int employeesCount;
+    public int employeesCount = 10;
 
     private SlowBlockingDb<Employer> blockingEmployers;
     private SlowBlockingDb<Position> blockingPositions;
@@ -115,7 +115,15 @@ public class FutureBenchmark {
     }
 
     private Function<String, Future<?>> requestToFuture(Blackhole blackhole, Function<String, TypedEmployee> executorRequest) {
-        return request -> blockingExecutorService.submit(() -> blackhole.consume(executorRequest.apply(request)));
+        return request -> blockingExecutorService.submit(() -> {
+            TypedEmployee result = executorRequest.apply(request);
+            if (blackhole != null) {
+                blackhole.consume(result);
+            } else {
+                System.out.println(result);
+            }
+            return result;
+        });
     }
 
     @Benchmark
@@ -126,11 +134,18 @@ public class FutureBenchmark {
 
         for (Future<?> future : futures) {
             try {
-                future.get();
+                System.out.println(future.get());
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void main(String[] args) {
+
+        FutureBenchmark futureBenchmark = new FutureBenchmark();
+        futureBenchmark.setup();
+        futureBenchmark.futureProcessing(null);
     }
 
     private TypedEmployee futureGetTypedEmployee(String key) {
