@@ -2,9 +2,12 @@ package optional;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.junit.Assert.assertEquals;
 
@@ -53,12 +56,38 @@ public class OptionalExample {
 
     @Test
     public void flatMap() {
-        throw new UnsupportedOperationException("Not implemented");
+        Optional<String> o1 = getOptional();
+
+        Function<String, Optional<Integer>> getLength = (str) -> str==null? Optional.empty() : Optional.of(str.length());
+
+        Optional<Integer> expected = o1.flatMap(getLength);
+
+        Optional<Integer> actual;
+        if (o1.isPresent()) {
+            actual = Optional.ofNullable(getLength.apply(o1.get()).get());
+        } else {
+            actual = Optional.empty();
+        }
+
+        assertEquals(expected, actual);
     }
 
     @Test
     public void filter() {
-        throw new UnsupportedOperationException("Not implemented");
+        Optional<String> o1 = getOptional();
+
+        Predicate<String> testString = (str)-> "abc".equals(str);
+
+        Optional<String> expected = o1.filter(testString);
+
+        Optional<String> actual;
+        if (o1.isPresent()) {
+           actual = Optional.ofNullable(testString.test(o1.get()) ? o1.get() : null);
+        } else {
+            actual = Optional.empty();
+        }
+
+        assertEquals(expected, actual);
     }
 
     private Optional<String> getOptional() {
