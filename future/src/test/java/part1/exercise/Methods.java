@@ -89,15 +89,13 @@ public class Methods {
         // get
         try {
             assertEquals(Integer.valueOf(1), future.get());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         // join
         assertEquals(Integer.valueOf(1), future.join());
         // getNow
-        future.getNow(0);
+        System.out.println(future.getNow(0));
         // getNumberOfDependents
     }
 
@@ -146,7 +144,6 @@ public class Methods {
                 future1.join();
             }
         });
-
 
         // any of
         // applyToEither

@@ -2,6 +2,7 @@ package part1.exercise;
 
 import org.junit.jupiter.api.Test;
 
+import javax.sql.RowSetInternal;
 import java.util.Arrays;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -36,7 +37,6 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
     public OfInt trySplit() {
         long size =estimateSize();
         if(size<10) return null;
-        System.out.println(size);
 //       simple split by rows
 //        int length =(endOuterExclusive-startOuterInclusive)/2;
 //       if (length<2)
@@ -50,35 +50,28 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
         // i'm tryharder
         int halfsize=(int)size/2;
-        int borderShift = innerLength==0? innerLength : innerLength - startInnerInclusive;
-        if((halfsize- borderShift)<1){
-            int newEndIndex = startInnerInclusive+halfsize/2;
-            RectangleSpliterator result = new RectangleSpliterator(array, startOuterInclusive,
-                    startOuterInclusive+1, startInnerInclusive, newEndIndex);
-            this.startInnerInclusive= newEndIndex;
-            return result;
+        int newRowIndex=0;
+        int newEndIndex=0;
+        if(startInnerInclusive>0)
+        {
+            if(halfsize<(innerLength-startInnerInclusive)) {
+                newEndIndex=startInnerInclusive+halfsize;
+                halfsize=0;
+            } else {
+                halfsize -= (innerLength - startInnerInclusive);
+                newRowIndex = 1;
+            }
         }
-        else{
-        int newEndIndex =(halfsize- borderShift)%innerLength; // this index not on same row so it's like startInnerInclusive =0
-        int newRowIndex =startOuterInclusive+halfsize/innerLength;
-        if(startOuterInclusive==newRowIndex) //if we have only one row
-            if(newEndIndex<startInnerInclusive){ //and indexes don't fucked up
-//                System.out.println(halfsize+ " "+(endOuterExclusive-startOuterInclusive)+ " " + newEndIndex + " " + lastRowEndIndexExclusive);
-//                RectangleSpliterator result = new RectangleSpliterator(array, startOuterInclusive, newRowIndex+1, startInnerInclusive, newEndIndex);
-//
-//                this.startInnerInclusive = newEndIndex;
-//                return result;
-                return null;
-        }
-            else
-                 newEndIndex = startInnerInclusive + (halfsize- borderShift)%innerLength; //new index in same row calc
-        RectangleSpliterator result =new RectangleSpliterator(array, startOuterInclusive,
-              newEndIndex==0?newRowIndex : newRowIndex+1, // newRowIndex is exclusive parameter, so if we need use item
-                                                   // from this row in new spliterator we need add +1 to this parameter
-                startInnerInclusive, newEndIndex);
-        this.startOuterInclusive = newRowIndex;
-        this.startInnerInclusive= newEndIndex;
-        return result;}
+       if(endOuterExclusive-startInnerInclusive==1) {
+            newEndIndex=startInnerInclusive;
+       }
+        newRowIndex+=startOuterInclusive+halfsize/innerLength;
+        newEndIndex+=halfsize%innerLength;
+        RectangleSpliterator result = new RectangleSpliterator(array, startOuterInclusive,
+                newEndIndex==0? newRowIndex:newRowIndex+1, startInnerInclusive, newEndIndex);
+        this.startInnerInclusive=newEndIndex;
+        this.startOuterInclusive=newRowIndex;
+        return result;
     }
 
     @Override
