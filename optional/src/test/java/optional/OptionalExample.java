@@ -85,6 +85,7 @@ public class OptionalExample {
            actual = Optional.ofNullable(testString.test(o1.get()) ? o1.get() : null);
         } else {
             actual = Optional.empty();
+
         }
 
         assertEquals(expected, actual);
